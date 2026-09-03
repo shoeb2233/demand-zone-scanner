@@ -364,8 +364,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # --- PERMANENT HARDCODED TOKEN ---
-GLOBAL_TOKEN = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiJIVTU0OTgiLCJqdGkiOiI2YTc5OGU2ZTBmZDM2ODI2MDg5NTJiNmQiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaXNQbHVzUGxhbiI6dHJ1ZSwiaXNFeHRlbmRlZCI6dHJ1ZSwiaWF0IjoxNzg2MzUxMjE0LCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE4MTc5MzUyMDB9.yXDWPFJwNAyTlQGzf_olWHdxxwG6q4blw1j0037WjQs"
-
+GLOBAL_TOKEN = st.secrets["UPSTOX_TOKEN"]
 @st.cache_data
 def get_nifty_500_instruments():
     """
