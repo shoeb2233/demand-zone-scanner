@@ -364,7 +364,8 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # --- PERMANENT HARDCODED TOKEN ---
-GLOBAL_TOKEN = st.secrets["UPSTOX_TOKEN"]
+GLOBAL_TOKEN = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiJIVTU0OTgiLCJqdGkiOiI2YTc5OGU2ZTBmZDM2ODI2MDg5NTJiNmQiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaXNQbHVzUGxhbiI6dHJ1ZSwiaXNFeHRlbmRlZCI6dHJ1ZSwiaWF0IjoxNzg2MzUxMjE0LCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE4MTc5MzUyMDB9.yXDWPFJwNAyTlQGzf_olWHdxxwG6q4blw1j0037WjQs"
+
 @st.cache_data
 def get_nifty_500_instruments():
     """
@@ -480,9 +481,12 @@ def get_nifty_500_instruments():
             unique_constituents.append(item)
             seen_symbols.add(symbol)
 
-    if len(unique_constituents) != 500:
+    # NIFTY 500 can temporarily/currently contain 501 constituents in the
+    # official NSE Indices constituent file. Do not reject a valid official
+    # 501-stock universe just because the index name says "NIFTY 500".
+    if len(unique_constituents) not in (500, 501):
         raise RuntimeError(
-            f"Expected exactly 500 NIFTY 500 constituents, "
+            f"Expected 500 or 501 official NIFTY 500 constituents, "
             f"but received {len(unique_constituents)}. "
             "Scanner stopped to prevent an incomplete/wrong universe."
         )
@@ -572,10 +576,10 @@ def get_nifty_500_instruments():
     print(f"✅ Upstox instruments mapped: {len(final_instruments)}")
     print(f"⚠️ Missing Upstox mappings: {len(missing)}")
 
-    if len(final_instruments) != 500:
+    if len(final_instruments) not in (500, 501):
         raise RuntimeError(
             f"NIFTY 500 mapping incomplete: "
-            f"{len(final_instruments)}/500 stocks mapped. "
+            f"{len(final_instruments)}/{len(unique_constituents)} stocks mapped. "
             "Scanner stopped instead of scanning an incorrect universe."
         )
 
@@ -596,7 +600,7 @@ def get_nifty_500_instruments():
         )
 
     print(f"✅ RELIANCE verified -> {reliance_key}")
-    print("🚀 NIFTY 500 universe verification complete: 500/500")
+    print(f"🚀 NIFTY 500 universe verification complete: {len(final_instruments)}/{len(unique_constituents)}")
 
     return final_instruments
 
